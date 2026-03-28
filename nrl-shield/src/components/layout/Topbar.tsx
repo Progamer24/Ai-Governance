@@ -22,9 +22,9 @@ export default function Topbar({ onMenuClick, title }: TopbarProps) {
   const nrlBadgeParts = nrlProfile
     ? [
         `LEVEL ${nrlProfile.level}`,
-        (nrlProfile as Record<string, unknown>).role as string | undefined,
-        (nrlProfile as Record<string, unknown>).department as string | undefined,
-      ].filter(Boolean)
+        nrlProfile.roleId ? `ROLE ${nrlProfile.roleId.slice(0, 6).toUpperCase()}` : undefined,
+        nrlProfile.needTags.length > 0 ? nrlProfile.needTags[0] : undefined,
+      ].filter((v): v is string => Boolean(v))
     : []
 
   useEffect(() => {
