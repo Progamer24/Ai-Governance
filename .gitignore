@@ -1,0 +1,8 @@
+# Root dependencies and caches
+node_modules/
+
+# Vite cache artifacts
+nrl-shield/.vite/
+
+# Local Supabase temp workspace files
+nrl-shield/supabase/.temp/
