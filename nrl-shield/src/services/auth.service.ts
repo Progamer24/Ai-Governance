@@ -32,10 +32,14 @@ return mapUser(data.user)
 }
 
 export async function verifyMfa(code: string): Promise<boolean> {
+// Validate TOTP code format before network round-trip (otplib digits default is 6)
+if (!code.match(new RegExp(`^\\d{${authenticator.options.digits ?? 6}}$`))) {
+throw new Error('Invalid TOTP code format')
+}
+
 const { data: factorsData, error: factorsError } = await supabase.auth.mfa.listFactors()
 if (factorsError || !factorsData?.totp?.length) {
-// Fallback: use otplib to do a local format check
-return authenticator.check(code, code) // structure check only
+throw new Error('MFA is not configured for this account')
 }
 
 const factor = factorsData.totp[0]

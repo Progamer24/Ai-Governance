@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { ShieldCheck, ShieldAlert, ShieldOff, Shield } from 'lucide-react'
+import { ShieldCheck, ShieldAlert, Shield } from 'lucide-react'
 import { clsx } from 'clsx'
 
 interface PromptGuardBadgeProps {
@@ -37,10 +37,7 @@ bg: 'bg-red-950/40',
 },
 } as const
 
-const unusedIcon = ShieldOff
-
 export default function PromptGuardBadge({ status }: PromptGuardBadgeProps) {
-void unusedIcon
 const { icon: Icon, label, color, border, bg } = CONFIG[status]
 
 return (

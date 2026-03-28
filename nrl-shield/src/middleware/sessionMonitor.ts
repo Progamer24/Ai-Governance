@@ -1,20 +1,22 @@
 const LAST_ACTIVE_KEY = 'nrl_last_active'
-const SESSION_ID_KEY = 'nrl_session_id'
 const POLL_INTERVAL_MS = 15_000
 
 export class SessionMonitor {
 private intervalId: ReturnType<typeof setInterval> | null = null
-private userId: string | null = null
 private onAnomalyDetected: (() => void) | null = null
+private sessionKey: string | null = null
+private expectedSessionId: string | null = null
 
 start(userId: string, onAnomalyDetected: () => void): void {
-this.userId = userId
 this.onAnomalyDetected = onAnomalyDetected
+this.sessionKey = `nrl_sid_${userId}`
 
-const currentSessionId = localStorage.getItem(SESSION_ID_KEY)
-if (!currentSessionId) {
-localStorage.setItem(SESSION_ID_KEY, this.generateSessionId())
-}
+// Generate the canonical session ID once and store it in sessionStorage
+// (tab-scoped). localStorage stores a copy that other tabs could overwrite,
+// which is the hijack signal we watch for.
+this.expectedSessionId = this.generateSessionId()
+sessionStorage.setItem(this.sessionKey, this.expectedSessionId)
+localStorage.setItem(this.sessionKey, this.expectedSessionId)
 
 this.updateLastActive()
 this.attachActivityListeners()
@@ -28,26 +30,25 @@ clearInterval(this.intervalId)
 this.intervalId = null
 }
 this.removeActivityListeners()
-this.userId = null
 this.onAnomalyDetected = null
+this.sessionKey = null
+this.expectedSessionId = null
 }
 
 private poll(): void {
-const storedId = localStorage.getItem(SESSION_ID_KEY)
-const expectedId = sessionStorage.getItem(`nrl_sid_${this.userId}`)
+if (!this.sessionKey || !this.expectedSessionId) return
 
-if (expectedId && storedId && storedId !== expectedId) {
+const storedInLocal = localStorage.getItem(this.sessionKey)
+
+// If localStorage was modified by a different tab/context the IDs diverge,
+// signalling a potential session hijack.
+if (storedInLocal && storedInLocal !== this.expectedSessionId) {
 this.onAnomalyDetected?.()
 }
 }
 
 private updateLastActive(): void {
 localStorage.setItem(LAST_ACTIVE_KEY, Date.now().toString())
-if (this.userId) {
-const sid = this.generateSessionId()
-sessionStorage.setItem(`nrl_sid_${this.userId}`, sid)
-localStorage.setItem(SESSION_ID_KEY, sid)
-}
 }
 
 private generateSessionId(): string {
