@@ -1,5 +1,5 @@
 import { NavLink, Outlet } from 'react-router-dom'
-import { Shield, Users, Key, FileText, AlertTriangle, BarChart2, Settings } from 'lucide-react'
+import { Shield, Users, Key, FileText, AlertTriangle, BarChart2, Settings, PlugZap } from 'lucide-react'
 import { useNRL } from '../../hooks/useNRL'
 import Card from '../../components/ui/Card'
 
@@ -9,6 +9,7 @@ const navLinks = [
   { to: '/admin/roles', label: 'Role Management', icon: Key },
   { to: '/admin/policies', label: 'Policy Management', icon: FileText },
   { to: '/admin/threats', label: 'Threat Monitor', icon: AlertTriangle },
+  { to: '/admin/connectors', label: 'Data Connectors', icon: PlugZap },
   { to: '/admin/reports', label: 'Reports', icon: BarChart2 },
   { to: '/admin/settings', label: 'Settings', icon: Settings },
 ]

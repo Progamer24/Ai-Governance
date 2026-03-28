@@ -19,6 +19,7 @@ import PoliciesPage from './pages/Admin/PolicyManagement/PoliciesPage'
 import ThreatPage from './pages/Admin/ThreatMonitor/ThreatPage'
 import ReportsPage from './pages/Admin/Reports/ReportsPage'
 import SettingsPage from './pages/Admin/SystemSettings/SettingsPage'
+import DataConnectorsPage from './pages/Admin/DataConnectors/DataConnectorsPage'
 
 function AppShell() {
   const [sidebarOpen, setSidebarOpen] = useState(true)
@@ -54,6 +55,7 @@ function AppShell() {
               <Route path="roles" element={<RolesPage />} />
               <Route path="policies" element={<PoliciesPage />} />
               <Route path="threats" element={<ThreatPage />} />
+              <Route path="connectors" element={<DataConnectorsPage />} />
               <Route path="reports" element={<ReportsPage />} />
               <Route path="settings" element={<SettingsPage />} />
             </Route>
