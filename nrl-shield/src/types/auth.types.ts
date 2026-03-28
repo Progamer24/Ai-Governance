@@ -15,6 +15,9 @@ export interface AppUser {
 	email: string
 	fullName: string | null
 	department: string | null
+	roleName?: string | null
+	level?: number | null
+	needTags?: string[]
 	isActive: boolean
 	isMfaEnabled: boolean
 }

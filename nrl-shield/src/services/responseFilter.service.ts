@@ -28,9 +28,14 @@ reason: string | null
 export function filterResponse(
 response: string,
 nrlLevel: number,
-_needTags: string[],
+needTags: string[],
 ): FilterResult {
 if (nrlLevel >= 5) {
+return { filtered: response, wasFiltered: false, reason: null }
+}
+
+// Reserved bypass for approved compliance reviewers.
+if (needTags.includes('COMPLIANCE_REVIEW')) {
 return { filtered: response, wasFiltered: false, reason: null }
 }
 

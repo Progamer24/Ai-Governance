@@ -1,4 +1,3 @@
-import React from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
 import { Shield, Users, Key, FileText, AlertTriangle, BarChart2, Settings } from 'lucide-react'
 import { useNRL } from '../../hooks/useNRL'

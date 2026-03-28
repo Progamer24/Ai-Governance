@@ -9,7 +9,10 @@ export function useRealtime<T extends Record<string, unknown>>(
   const [newRecord, setNewRecord] = useState<T | null>(null)
   const [isSubscribed, setIsSubscribed] = useState(false)
   const callbackRef = useRef(callback)
-  callbackRef.current = callback
+
+  useEffect(() => {
+    callbackRef.current = callback
+  }, [callback])
 
   useEffect(() => {
     const channel = supabase

@@ -21,6 +21,7 @@ export function AppToaster() {
   )
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const toast = {
   success: (message: string) =>
     hotToast.custom((t) => (

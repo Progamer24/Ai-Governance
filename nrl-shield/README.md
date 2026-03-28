@@ -1,73 +1,83 @@
-# React + TypeScript + Vite
+# NRL Shield
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+NRL Shield is an AI governance platform implementing Need-to-Know + Role + Level controls, prompt safety, risk scoring, auditability, and admin oversight for enterprise AI interactions.
 
-Currently, two official plugins are available:
+## Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- React + TypeScript + Vite
+- Supabase (Auth, Postgres, Edge Functions)
+- TailwindCSS + Framer Motion
+- Recharts for risk/operations visualizations
+- PDF and OCR processing via `pdfjs-dist` and `tesseract.js`
+- jsPDF + jspdf-autotable for compliance PDF export
 
-## React Compiler
+## Highlights
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- NRL-aware AI assistant with prompt guard, risk scoring, and response filtering
+- Realtime query stream panel (Supabase Realtime-backed)
+- Admin data connectors page for cloud source onboarding and document uploads
+- Document ingestion security analysis (PDF, image, text) with sensitive-content findings
+- Audit/event tracking and explainability receipt support hooks
 
-## Expanding the ESLint configuration
+## Run Locally
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Production build check:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run build
 ```
+
+Lint check:
+
+```bash
+npm run lint
+```
+
+Mongo bootstrap and smoke check:
+
+```bash
+# set env first (PowerShell example)
+$env:MONGODB_URI="mongodb+srv://<user>:<password>@<cluster>/"
+$env:MONGODB_DB="nrl_shield"
+
+npm run mongo:bootstrap
+npm run mongo:smoke
+```
+
+## Environment
+
+Copy .env.example and provide values:
+
+- VITE_SUPABASE_URL
+- VITE_SUPABASE_ANON_KEY
+- VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY (optional alternative to anon key)
+- VITE_SESSION_TIMEOUT_MINUTES
+- VITE_MAX_QUERIES_PER_HOUR
+- VITE_GOOGLE_DRIVE_OAUTH_URL (optional)
+
+Edge-only variables are documented in docs/DEPLOYMENT.md.
+
+## Implemented Phases
+
+- Phase 1: Foundation and backend schema/functions
+- Phase 2: Auth + security components
+- Phase 3: NRL + RBAC
+- Phase 4: Frontend AI pipeline services/hooks
+- Phase 5: User interface pages/layout
+- Phase 6: Admin panel sections and routing
+- Phase 8: CSV/PDF reporting + scheduled report edge function
+- Phase 9: Security hardening (headers, CORS tightening, key-rotation flow)
+- Phase 10: UI polish, responsive enhancements, deployment docs, NRL smoke checklist
+
+## Key Docs
+
+- docs/ARCHITECTURE.md
+- docs/SECURITY.md
+- docs/DEPLOYMENT.md
+- docs/NRL_MATRIX.md
+- docs/API_REFERENCE.md

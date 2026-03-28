@@ -19,3 +19,12 @@ export interface AuditLogRecord {
 	severity: AuditSeverity
 	createdAt: string
 }
+
+export interface ExplainabilityReceipt {
+	id: string
+	queryId: string
+	userId: string
+	receiptPayload: Record<string, unknown>
+	receiptSignature: string
+	createdAt: string
+}

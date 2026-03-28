@@ -8,11 +8,14 @@ const CHECK_INTERVAL_MS = 30_000
 export default function SessionTimeout() {
 const { isAuthenticated, logout } = useAuth()
 const [showWarning, setShowWarning] = useState(false)
-const lastActivityRef = useRef(Date.now())
+const [minutesLeft, setMinutesLeft] = useState(0)
+const lastActivityRef = useRef(0)
 const timeoutMs = securityConfig.sessionTimeoutMinutes * 60 * 1000
 
 useEffect(() => {
 if (!isAuthenticated) return
+
+lastActivityRef.current = Date.now()
 
 const updateActivity = () => {
 lastActivityRef.current = Date.now()
@@ -30,8 +33,10 @@ if (idle >= timeoutMs) {
 logout()
 } else if (idle >= timeoutMs - WARNING_BEFORE_MS) {
 setShowWarning(true)
+setMinutesLeft(Math.max(1, Math.ceil((timeoutMs - idle) / 60_000)))
 } else {
 setShowWarning(false)
+setMinutesLeft(0)
 }
 }, CHECK_INTERVAL_MS)
 
@@ -44,10 +49,6 @@ clearInterval(interval)
 }, [isAuthenticated, logout, timeoutMs])
 
 if (!showWarning) return null
-
-const minutesLeft = Math.ceil(
-(timeoutMs - (Date.now() - lastActivityRef.current)) / 60_000,
-)
 
 return (
 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
