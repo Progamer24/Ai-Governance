@@ -1,7 +1,7 @@
 import { isAdminRole } from '../utils/nrl.utils'
 import type { NRLProfile, Permission } from '../types/rbac.types'
 
-export function hasPermission(nrlProfile: NRLProfile, resource: string, action: string): boolean {
+export function hasPermission(nrlProfile: NRLProfile, _resource: string, _action: string): boolean {
 if (!nrlProfile.isActive) return false
 if (isAdmin(nrlProfile.roleId)) return true
 return false

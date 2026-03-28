@@ -1,7 +1,6 @@
 import { useState, type ReactNode } from 'react'
 import { ChevronUp, ChevronDown } from 'lucide-react'
 import { clsx } from 'clsx'
-import Spinner from './Spinner'
 
 export interface Column<T extends Record<string, unknown>> {
   key: string

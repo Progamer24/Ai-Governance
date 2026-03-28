@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
 import { Bell, LogOut, Menu } from 'lucide-react'
-import { clsx } from 'clsx'
 import { useAuth } from '../../hooks/useAuth'
 import { useNRL } from '../../hooks/useNRL'
 

@@ -40,10 +40,6 @@ export default function Sidebar() {
 
   const visibleItems = navItems.filter((item) => !item.adminOnly || isAdmin)
 
-  const initials = user?.email
-    ? user.email.slice(0, 2).toUpperCase()
-    : '??'
-
   return (
     <motion.aside
       animate={{ width: collapsed ? 64 : 256 }}
