@@ -1,0 +1,31 @@
+.login-bg {
+  position: fixed;
+  inset: 0;
+  background: #040810;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.login-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0, 212, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 212, 255, 0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  animation: grid-drift 20s linear infinite;
+}
+
+.login-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% 20%, rgba(0, 212, 255, 0.06) 0%, transparent 70%),
+              radial-gradient(ellipse 40% 40% at 80% 80%, rgba(0, 255, 157, 0.04) 0%, transparent 60%);
+}
+
+@keyframes grid-drift {
+  from { background-position: 0 0, 0 0; }
+  to   { background-position: 60px 60px, 60px 60px; }
+}
