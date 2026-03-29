@@ -47,20 +47,8 @@ export default function PromptGuardBadge({ status, blocked = false, reason = nul
 
 	return (
 		<motion.div
-			animate={
-				resolvedStatus === 'checking'
-					? { rotate: 360 }
-					: resolvedStatus === 'blocked'
-						? { scale: [1, 1.08, 1] }
-						: { rotate: 0, scale: 1 }
-			}
-			transition={
-				resolvedStatus === 'checking'
-					? { duration: 1.2, repeat: Infinity, ease: 'linear' }
-					: resolvedStatus === 'blocked'
-						? { duration: 0.7, repeat: Infinity, ease: 'easeInOut' }
-						: { duration: 0.2 }
-			}
+			animate={resolvedStatus === 'blocked' ? { scale: [1, 1.04, 1] } : { scale: 1 }}
+			transition={resolvedStatus === 'blocked' ? { duration: 0.8, repeat: Infinity, ease: 'easeInOut' } : { duration: 0.2 }}
 			className={clsx(
 				'inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium',
 				color,
@@ -70,7 +58,13 @@ export default function PromptGuardBadge({ status, blocked = false, reason = nul
 			role="status"
 			aria-label={`Prompt guard: ${label}`}
 		>
-			<Icon className="h-3.5 w-3.5" />
+			<motion.span
+				className="inline-flex"
+				animate={resolvedStatus === 'checking' ? { rotate: 360 } : { rotate: 0 }}
+				transition={resolvedStatus === 'checking' ? { duration: 1.2, repeat: Infinity, ease: 'linear' } : { duration: 0.2 }}
+			>
+				<Icon className="h-3.5 w-3.5" />
+			</motion.span>
 			<span>{label}</span>
 			{reason && resolvedStatus === 'blocked' && <span className="opacity-80">- {reason}</span>}
 		</motion.div>

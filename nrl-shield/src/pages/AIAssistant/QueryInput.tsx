@@ -12,6 +12,8 @@ interface QueryInputProps {
   isLoading?: boolean
   disabled?: boolean
   guardBlocked?: boolean
+  selectedModel?: string
+  onModelChange?: (model: string) => void
 }
 
 type GuardStatus = 'idle' | 'checking' | 'safe' | 'blocked'
@@ -24,6 +26,8 @@ export default function QueryInput({
   isLoading = false,
   disabled = false,
   guardBlocked = false,
+  selectedModel = 'gpt-4o-mini',
+  onModelChange,
 }: QueryInputProps): JSX.Element {
   const isControlled = typeof value === 'string' && typeof onChange === 'function'
   const [internalText, setInternalText] = useState('')
@@ -92,6 +96,21 @@ export default function QueryInput({
     <div className="border-t border-white/10 bg-navy/80 p-4 backdrop-blur">
       <div className="flex items-end gap-3">
         <div className="flex-1 relative">
+          <div className="mb-2 flex items-center gap-2">
+            <label className="text-[11px] uppercase tracking-wider text-white/50">Model</label>
+            <select
+              value={selectedModel}
+              onChange={(e) => onModelChange?.(e.target.value)}
+              disabled={isLoading || disabled}
+              className="rounded-md border border-white/10 bg-white/5 px-2 py-1 text-xs text-white outline-none focus:border-cyan"
+            >
+              <option value="gpt-4o-mini">GPT-4o Mini</option>
+              <option value="gpt-4.1-mini">GPT-4.1 Mini</option>
+              <option value="llama3.1-8b">Llama 3.1 8B</option>
+              <option value="mistral-7b">Mistral 7B</option>
+              <option value="local-fallback-agent">Local Fallback</option>
+            </select>
+          </div>
           <textarea
             value={text}
             onChange={(e) => handleTextChange(e.target.value)}

@@ -18,28 +18,32 @@ const [error, setError] = useState<string | null>(null)
 const abortRef = useRef<AbortController | null>(null)
 
 const sendQuery = useCallback(
-async (query: string): Promise<AIResponse | null> => {
+async (query: string, preferredModel?: string): Promise<AIResponse> => {
 setError(null)
 
 if (!session?.access_token) {
-setError('Not authenticated')
-return null
+const message = 'Not authenticated'
+setError(message)
+throw new Error(message)
 }
 
 if (!nrlProfile?.isActive) {
-setError('No active NRL profile')
-return null
+const message = 'No active NRL profile'
+setError(message)
+throw new Error(message)
 }
 
 if (!rateLimiter.consume()) {
-setError('Rate limit exceeded. Please wait before sending another query.')
-return null
+const message = 'Rate limit exceeded. Please wait before sending another query.'
+setError(message)
+throw new Error(message)
 }
 
 // Fast local check first
 if (quickCheck(query)) {
-setError('Query blocked: potential injection detected')
-return null
+const message = 'Query blocked: potential injection detected'
+setError(message)
+throw new Error(message)
 }
 
 setIsLoading(true)
@@ -48,19 +52,20 @@ abortRef.current = new AbortController()
 try {
 const guardResult = await checkPrompt(query, session.access_token)
 if (!guardResult.isSafe) {
-setError(`Query blocked: ${guardResult.reason}`)
-return null
+const message = `Query blocked: ${guardResult.reason}`
+setError(message)
+throw new Error(message)
 }
 
 const sessionToken = session.access_token
-const result = await aiSendQuery(query, sessionToken, session.access_token)
+const result = await aiSendQuery(query, sessionToken, session.access_token, preferredModel)
 
 setLastResponse(result)
 return result
 } catch (err) {
 const msg = err instanceof Error ? err.message : 'Unknown error'
 setError(msg)
-return null
+throw new Error(msg)
 } finally {
 setIsLoading(false)
 }

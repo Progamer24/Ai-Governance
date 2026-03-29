@@ -16,13 +16,14 @@ type RealtimeQuery = {
 
 export default function AssistantPage(): JSX.Element {
   const [messages, setMessages] = useState<Message[]>([])
+	const [selectedModel, setSelectedModel] = useState('gpt-4o-mini')
   const { sendQuery, isLoading } = useAIQuery()
 	const { records: realtimeQueries, isSubscribed } = useRealtime<RealtimeQuery>('ai_queries')
 
   const handleSend = async (query: string) => {
     setMessages((prev) => [...prev, { role: 'user', content: query }])
-    const response = await sendQuery(query)
-    if (response) {
+		try {
+			const response = await sendQuery(query, selectedModel)
       setMessages((prev) => [
         ...prev,
         {
@@ -33,9 +34,9 @@ export default function AssistantPage(): JSX.Element {
           modelUsed: response.modelUsed,
         },
       ])
-    } else {
-      toast.error('Query failed or was blocked by security controls.')
-    }
+		} catch (err) {
+			toast.error(err instanceof Error ? err.message : 'Query failed or was blocked by security controls.')
+		}
   }
 
   return (
@@ -66,7 +67,12 @@ export default function AssistantPage(): JSX.Element {
 
         <div className="flex-1 flex flex-col bg-white/5 border border-white/10 rounded-xl overflow-hidden">
           <ChatWindow messages={messages} isLoading={isLoading} />
-          <QueryInput onSend={handleSend} isLoading={isLoading} />
+          <QueryInput
+				onSend={handleSend}
+				isLoading={isLoading}
+				selectedModel={selectedModel}
+				onModelChange={setSelectedModel}
+			/>
         </div>
       </div>
     </PageWrapper>
