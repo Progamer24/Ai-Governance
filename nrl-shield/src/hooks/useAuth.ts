@@ -11,6 +11,7 @@ session: Session | null
 isLoading: boolean
 isAuthenticated: boolean
 login: (email: string, password: string) => Promise<void>
+signup: (email: string, password: string, fullName: string, department: string) => Promise<void>
 logout: () => Promise<void>
 _setUser: (user: AppUser | null) => void
 _setSession: (session: Session | null) => void
@@ -29,6 +30,17 @@ try {
 const user = await authService.login(email, password)
 const session = await authService.getSession()
 set({ user, session, isAuthenticated: true })
+} finally {
+set({ isLoading: false })
+}
+},
+
+signup: async (email: string, password: string, fullName: string, department: string) => {
+set({ isLoading: true })
+try {
+const authResult = await authService.signup({ email, password, fullName, department })
+const session = await authService.getSession()
+set({ user: authResult.user, session, isAuthenticated: true })
 } finally {
 set({ isLoading: false })
 }
@@ -91,6 +103,7 @@ session: store.session,
 isLoading: store.isLoading,
 isAuthenticated: store.isAuthenticated,
 login: store.login,
+signup: store.signup,
 logout: store.logout,
 }
 }

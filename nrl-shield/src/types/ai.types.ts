@@ -17,4 +17,8 @@ export interface AIResponse {
 	riskScore: number
 	modelUsed: string
 	nrlContext: Record<string, unknown>
+	tcsScore?: number
+	trustTier?: 'ELEVATED' | 'HIGH' | 'STRICT'
+	attestationVerified?: boolean
+	receiptId?: string | null
 }

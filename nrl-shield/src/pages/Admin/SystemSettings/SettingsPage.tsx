@@ -1,3 +1,16 @@
+import PageWrapper from '../../../components/layout/PageWrapper'
+import AISettings from './AISettings'
+import EncryptionSettings from './EncryptionSettings'
+import SecuritySettings from './SecuritySettings'
+
 export default function SettingsPage() {
-  return <div className="p-6 text-white/60 font-mono">System Settings — coming soon</div>
+  return (
+    <PageWrapper title="System Settings">
+      <div className="space-y-4">
+        <AISettings />
+        <EncryptionSettings />
+        <SecuritySettings />
+      </div>
+    </PageWrapper>
+  )
 }

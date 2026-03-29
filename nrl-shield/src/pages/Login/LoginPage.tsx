@@ -6,10 +6,13 @@ import Button from '../../components/ui/Button'
 import './LoginPage.css'
 
 export default function LoginPage() {
-  const { login } = useAuth()
+  const { login, signup } = useAuth()
   const navigate = useNavigate()
+  const [mode, setMode] = useState<'signin' | 'signup'>('signin')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [fullName, setFullName] = useState('')
+  const [department, setDepartment] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -19,10 +22,14 @@ export default function LoginPage() {
     setError(null)
     setIsLoading(true)
     try {
-      await login(email, password)
+      if (mode === 'signup') {
+        await signup(email, password, fullName, department)
+      } else {
+        await login(email, password)
+      }
       navigate('/dashboard')
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Login failed. Please check your credentials.')
+      setError(err instanceof Error ? err.message : 'Authentication failed. Please check your credentials.')
     } finally {
       setIsLoading(false)
     }
@@ -43,6 +50,23 @@ export default function LoginPage() {
             <p className="text-white/50 text-sm mt-1">Secure AI Governance</p>
           </div>
 
+          <div className="mb-4 flex rounded-lg border border-white/10 bg-white/5 p-1 text-xs">
+            <button
+              type="button"
+              onClick={() => setMode('signin')}
+              className={`flex-1 rounded-md px-3 py-2 transition ${mode === 'signin' ? 'bg-cyan/20 text-cyan' : 'text-white/50'}`}
+            >
+              Sign In
+            </button>
+            <button
+              type="button"
+              onClick={() => setMode('signup')}
+              className={`flex-1 rounded-md px-3 py-2 transition ${mode === 'signup' ? 'bg-cyan/20 text-cyan' : 'text-white/50'}`}
+            >
+              Sign Up
+            </button>
+          </div>
+
           {error && (
             <div className="mb-4 px-4 py-3 rounded-lg border border-crimson/40 bg-crimson/10 text-crimson text-sm">
               {error}
@@ -50,6 +74,33 @@ export default function LoginPage() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
+            {mode === 'signup' && (
+              <>
+                <div>
+                  <label className="block text-xs text-white/50 mb-1.5 font-mono uppercase tracking-widest">Full Name</label>
+                  <input
+                    type="text"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    placeholder="Jane Doe"
+                    required
+                    className={inputClass}
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs text-white/50 mb-1.5 font-mono uppercase tracking-widest">Department</label>
+                  <input
+                    type="text"
+                    value={department}
+                    onChange={(e) => setDepartment(e.target.value)}
+                    placeholder="Operations"
+                    required
+                    className={inputClass}
+                  />
+                </div>
+              </>
+            )}
+
             <div>
               <label className="block text-xs text-white/50 mb-1.5 font-mono uppercase tracking-widest">Email</label>
               <input
@@ -88,7 +139,7 @@ export default function LoginPage() {
             </div>
 
             <Button type="submit" variant="primary" size="md" loading={isLoading} disabled={isLoading} className="w-full mt-2">
-              Sign In
+              {mode === 'signup' ? 'Create Account' : 'Sign In'}
             </Button>
           </form>
 

@@ -103,6 +103,9 @@ export async function signup(input: SignupInput): Promise<AuthResult> {
 			data: {
 				full_name: input.fullName,
 				department: input.department,
+				role: 'ANALYST',
+				level: 2,
+				need_tags: ['GENERAL', 'OPERATIONAL'],
 			},
 		},
 	})

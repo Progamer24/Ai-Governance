@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react'
 import { supabase } from '../config/supabase'
 import type { AuditLogRecord } from '../types/audit.types'
+import { mockAuditLogs } from '../data/mockData'
 
 interface AuditFilters {
   eventType?: string
@@ -30,10 +31,14 @@ export function useAudit() {
       if (filters?.endDate) query = query.lte('created_at', filters.endDate)
 
       const { data, error } = await query
-      if (error) throw error
-      setLogs((data ?? []) as AuditLogRecord[])
+      if (error || !data || data.length === 0) {
+        setLogs(mockAuditLogs)
+        return
+      }
+      setLogs(data as AuditLogRecord[])
     } catch (err) {
       console.error('Failed to fetch audit logs:', err)
+      setLogs(mockAuditLogs)
     } finally {
       setIsLoading(false)
     }

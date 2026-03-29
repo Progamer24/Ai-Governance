@@ -6,6 +6,7 @@ import LogDetail from './LogDetail'
 import ExportPanel from './ExportPanel'
 import { supabase } from '../../config/supabase'
 import type { AuditLogRecord, AuditSeverity } from '../../types/audit.types'
+import { mockAuditLogs } from '../../data/mockData'
 
 const SEVERITIES: AuditSeverity[] = ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL']
 
@@ -40,7 +41,7 @@ export default function AuditPage() {
       if (severityFilter) query = query.eq('severity', severityFilter)
 
       const { data } = await query
-      if (data) {
+      if (data && data.length > 0) {
         setLogs(
           (data as RawLog[]).map((r) => ({
             id: r.id,
@@ -53,7 +54,11 @@ export default function AuditPage() {
             createdAt: r.created_at,
           })),
         )
+      } else {
+        setLogs(mockAuditLogs)
       }
+    } catch {
+      setLogs(mockAuditLogs)
     } finally {
       setIsLoading(false)
     }

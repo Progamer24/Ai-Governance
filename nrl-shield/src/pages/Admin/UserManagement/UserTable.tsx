@@ -9,7 +9,7 @@ interface UserRecord {
   department: string | null
   is_active: boolean
   nrl_level?: number
-  role_id?: string
+  nrl_role_id?: string
 }
 
 interface Props {
@@ -42,7 +42,7 @@ export default function UserTable({ users, isLoading, onEdit, onDelete, onLock }
               <td className="px-4 py-3">
                 {u.nrl_level ? <Badge variant="info">L{u.nrl_level}</Badge> : '—'}
               </td>
-              <td className="px-4 py-3 text-white/50 text-xs">{u.role_id ?? '—'}</td>
+              <td className="px-4 py-3 text-white/50 text-xs">{u.nrl_role_id ?? '—'}</td>
               <td className="px-4 py-3">
                 <Badge variant={u.is_active ? 'success' : 'danger'}>{u.is_active ? 'Active' : 'Locked'}</Badge>
               </td>

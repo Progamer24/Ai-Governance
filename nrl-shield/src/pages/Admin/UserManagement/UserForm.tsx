@@ -1,7 +1,6 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Modal from '../../../components/ui/Modal'
 import Button from '../../../components/ui/Button'
-import { supabase } from '../../../config/supabase'
 
 interface UserRecord {
   id?: string
@@ -11,7 +10,12 @@ interface UserRecord {
   is_active: boolean
   is_mfa_enabled: boolean
   nrl_level?: number
-  role_id?: string
+  nrl_role_id?: string
+}
+
+export type UserFormPayload = UserRecord & {
+  nrl_need_tags: string[]
+  nrl_role_id: string | undefined
 }
 
 const NEED_TAG_OPTIONS = ['GENERAL', 'OPERATIONAL', 'FINANCIAL', 'HR', 'LEGAL', 'SYSTEM', 'SECURITY', 'AUDIT', 'ALL']
@@ -20,15 +24,25 @@ interface Props {
   user?: UserRecord
   isOpen: boolean
   onClose: () => void
-  onSave: () => void
+  onSave: (payload: UserFormPayload) => Promise<void> | void
 }
 
 export default function UserForm({ user, isOpen, onClose, onSave }: Props) {
-  const [form, setForm] = useState<UserRecord>(user ?? {
-    email: '', full_name: '', department: '', is_active: true, is_mfa_enabled: false, nrl_level: 1, role_id: 'ANALYST',
+  const [form, setForm] = useState<UserRecord>({
+    email: '', full_name: '', department: '', is_active: true, is_mfa_enabled: false, nrl_level: 1, nrl_role_id: 'ANALYST',
   })
-  const [needTags, setNeedTags] = useState<string[]>(user ? [] : ['GENERAL'])
+  const [needTags, setNeedTags] = useState<string[]>(['GENERAL'])
   const [saving, setSaving] = useState(false)
+
+  useEffect(() => {
+    if (user) {
+      setForm(user)
+      setNeedTags(user.id ? [] : ['GENERAL'])
+    } else {
+      setForm({ email: '', full_name: '', department: '', is_active: true, is_mfa_enabled: false, nrl_level: 1, nrl_role_id: 'ANALYST' })
+      setNeedTags(['GENERAL'])
+    }
+  }, [user, isOpen])
 
   const toggle = (tag: string) =>
     setNeedTags((t) => t.includes(tag) ? t.filter((x) => x !== tag) : [...t, tag])
@@ -36,10 +50,11 @@ export default function UserForm({ user, isOpen, onClose, onSave }: Props) {
   const handleSave = async () => {
     setSaving(true)
     try {
-      if (user?.id) {
-        await supabase.from('profiles').update({ full_name: form.full_name, department: form.department, is_active: form.is_active }).eq('id', user.id)
-      }
-      onSave()
+      await onSave({
+        ...form,
+        nrl_need_tags: needTags,
+        nrl_role_id: form.nrl_role_id,
+      })
     } finally {
       setSaving(false)
     }
@@ -48,7 +63,7 @@ export default function UserForm({ user, isOpen, onClose, onSave }: Props) {
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={user?.id ? 'Edit User' : 'Add User'} size="md">
       <div className="space-y-4">
-        {['email', 'full_name', 'department', 'role_id'].map((field) => (
+        {['email', 'full_name', 'department', 'nrl_role_id'].map((field) => (
           <div key={field}>
             <label className="block text-xs text-white/50 mb-1 capitalize">{field.replace('_', ' ')}</label>
             <input
